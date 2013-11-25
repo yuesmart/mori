@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Martin Xu(martin.xus@gmail.com)">
+    <title><%=@title|| "首页"%> - Mori Reading (YueSmart Studio)</title>
+    <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+    <%= csrf_meta_tags %>
+    
+</head>
+<body>
+    <!-- Fixed navbar -->
+     <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" <%= (@category_id.to_i == 0) ? 'class=active' : ''%>>Mori Reading</a>
+        </div>
+        <div class="navbar-collapse collapse">
+        <%if current_user%>
+          <ul class="nav navbar-nav">
+            <%if @current_chapter.nil? && @next_chapter.nil? && @next_chapter.nil?%>
+              <%Category.all.each do |c| %>
+                <li <%= (@category_id.to_i == c.id) ? 'class=active' : ''%>><a href="/categories/<%=c.id%>"><%=c.name%></a></li>
+                <%end%>
+            <%end%>
+         
+          </ul>
+          <ul class="nav navbar-nav navbar-center text-center">
+              <%unless @pre_chapter.nil?%>
+                  <li><a href="/chapters/<%=@pre_chapter.id%>">上一章：<%=truncate @pre_chapter.name,length: 14%></a></li>
+              <%end%>
+              <%unless @current_chapter.nil?%>
+                  <li class='activen'><a href="/chapters/<%=@current_chapter.id%>">当前阅读章节：<%=truncate @current_chapter.name,length: 14%></a></li>
+              <%end%>
+              <%unless @next_chapter.nil?%>
+                  <li class="text-right"><a href="/chapters/<%=@next_chapter.id%>">下一章：<%=truncate @next_chapter.name,length: 14%></a></li>
+              <%end%>
+          </ul>
+           <ul class="nav navbar-nav navbar-right">
+            <li>               
+                <form action="/books" method="get">
+                    <input type="text" name="q" value="" class="search-query span2" style="margin-top:13px;" placeholder="检索:书名、作者&hellip;">
+                    <span class="fornav"><i class="icon-search"></i></span>
+                </form>
+            </li>
+            <li>
+                <%=link_to '退出',destroy_user_session_path%>
+            </li>
+          </ul> 
+          <%end%>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div> 
+    
+    <%if notice.present?%>
+      <p class="notice"><%= notice %></p>
+    <%end%>
+    <%if alert.present?%>
+      <p class="alert"><%= alert %></p>
+    <%end%>
+    
+    <div class="container content ">
+        <%= yield %>
+    </div> <!-- /container -->
+
+    <div class="text-center">          
+    <footer class="footer" id="footer">
+        <div class="container">
+            <p> Copyright ©2013 YueSmart Studio All Rights Reserved.
+                
+            <ul class="footer-links">
+                <li><a target="_blank" href="#">关于我们</a></li>
+                <li class="muted">.</li>
+                <li><a target="_blank" href="mailto:martin.xus@gmail.com">问题反馈</a></li>
+                <li><a href="http://www.miibeian.gov.cn/">苏ICP备12055608号-1</a></li>
+            </ul>	
+        </div>
+    </footer>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+    <%= yield :js%>
+  </body>
+</html>

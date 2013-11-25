@@ -1,0 +1,35 @@
+<%@title = "#{@book.name} [#{@book.category.name}]"%>
+<div id="book_nav">
+    <ol class="breadcrumb">
+        <li>首页</li>
+        <li><%=link_to @book.category.name, @book.category%></li>
+        <li><%=link_to @book.name, @book%></li>
+        <li class="active">章节列表</li>
+    </ol>
+</div>
+<div class="text-center" id="book">
+    <h1>
+        <%=@book.name%><br/>
+    </h1>
+     <small>作者：<%=@book.author%> 最后更新时间：<%=@book.updated_at.to_s :db%></small>
+</div>
+<br/>
+
+<div id="chapters">
+    <table class="table table-striped">
+        <%@chapters.each_slice(4) do |cs|%>
+        <tr>
+          <%cs.each do |c|%>
+            <td><a name="chapter_<%=c.id%>"></a><%=link_to trim(c.name),c,title: c.name%></td>
+          <%end%>
+        </tr>
+        <%end%>
+    </table>
+</div>
+<%content_for :js do%>
+<%if @current_chapter.present?%>
+<script type="text/javascript">
+    // location.href = "/books/<%=@book.id%>#chapter_<%=@current_chapter.id%>"
+</script>
+<%end%>
+<%end%>

@@ -1,0 +1,34 @@
+<div class="span5">
+  <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+    <fieldset>
+      <legend class="form_legend">
+          Sign in
+      </legend>
+      <div class="control-group">
+        <span class="control-label">账号</span>
+
+        <div class="login-controls">
+          <%= f.text_field :login, :required => false, :autofocus => true %>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="control-label">密码</span>
+
+        <div class="login-controls">
+          <%= f.password_field :password, :required => false %>
+        </div>
+      </div>
+      <br/>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            登陆
+        </button>
+      </div>
+    </fieldset>   
+  <% end %>
+</div>
+
+
+<div class="span6">
+  <%= render "devise/shared/links" %>
+</div>

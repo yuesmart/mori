@@ -1,0 +1,100 @@
+<%if @chapter.present?%>
+<%@title = "#{@chapter.name} - #{@book.name} [#{@book.category.name}]"%>
+<%else%>
+<%@title = "未知章节 - "%>
+<%end%>
+<%if @chapter.present?%>
+    <div id="book_nav">
+        <ol class="breadcrumb">
+            <li>首页</li>
+            <li><%=link_to @book.category.name, @book.category%></li>
+            <li><%=link_to @book.name, @book%></li>
+            <li class="active"><%= @chapter.name%></li>
+        </ol>
+    </div>
+    <div class="text-center" id="book">
+        <h1>
+            <%=@chapter.name%><br/>
+        </h1>
+         <small>最后更新时间：<%=@chapter.updated_at.to_s :db%></small>
+    </div>
+    <br/>
+    <div id="chapters">
+        <table class="table table-striped">
+            <%=raw @chapter.content.try(:content)%>
+        </table>
+    </div>
+    
+    <div class="text-center">
+        <%if @pre_chapter.present?%>
+            <a href="/chapters/<%=@pre_chapter.id%>">上一章：<%=truncate @pre_chapter.name,length: 25%></a>
+        <%else%>
+            <a>上一章：无</a>
+        <%end%>
+        <%unless @current_chapter.nil?%>
+            | <a href="/books/<%=@book.id%>">返回目录</a> |
+        <%end%>
+        <%if @next_chapter.present?%>
+            <a href="/chapters/<%=@next_chapter.id%>">下一章：<%=truncate @next_chapter.name,length: 25%></a>
+        <%else%>
+            <a>下一章：无</a>
+        <%end%>
+    </div>
+
+
+    <%content_for :js do%>
+        <script type="text/javascript">
+            document.onkeydown = pageEvent; 
+        
+            function pageEvent(evt){
+                var enableEnter = false;  
+                evt = evt ||window.event; 
+                var key=evt.which||evt.keyCode; 
+                if (key == 13){ 
+                    if (enableEnter){ 
+                        location = bookpage 
+                        return false; 
+                    }; 
+                }; 
+                if (key == 37) {
+                  <%if @pre_chapter.present?%>
+                    go('pre')
+                  <%else%>
+                    noMoreResource('pre');
+                  <%end%>
+                };
+                if (key == 39){
+                    <%if @next_chapter.present?%>
+                      go('next');
+                    <%else%>
+                      noMoreResource('next');
+                    <%end%>
+                } 
+            }; 
+        
+            function go(m){
+                location.href = "/chapters/<%=@chapter.id%>?m="+m
+            }
+            
+            function noMoreResource(m){
+                if(m=='pre')
+                    alert('已经碰到地板了，前面没有章节了');
+                else if(m=='next')
+                    alert("已经碰到天花板了，后面没有章节了。\n请关注本书更新，点击《追书》，网站会第一时间发送更新提醒！");
+            }
+        </script>
+    <%end%>
+<%else%>
+<div class="jumbotron">
+    <h1>Oh,Sorry!</h1>
+    <p>
+        找不到资源，有可能服务器正在同步数据，请稍等一会...
+    </p>
+
+    <p>
+        <a class="btn btn-lg btn-primary" href="javascript:history.go(-1);">&laquo;返回上一页 </a>
+     </p>
+</div>
+    
+
+<%end%>

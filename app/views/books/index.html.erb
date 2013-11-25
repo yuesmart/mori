@@ -1,0 +1,35 @@
+<%if @q.present?%>
+<div class="alert alert-info">
+    关键字：<%=@q%>
+</div>
+<%end%>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>小说名称</th>
+      <th>作者</th>
+      <th>状态</th>
+      <th>最新章节</th>
+      <th>更新时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @books.each do |book| %>
+      <tr>
+        <td><%= link_to highlight(book.name,@q),book %></td>
+        <td><%= highlight book.author,@q %></td>
+        <td><%= book.status%></td>
+        <td><%= book.last_chapter_name%></td>
+        <td><%= book.updated_at.to_s(:db)%>
+        <td><%= link_to '阅读', book %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="text-right">
+    <%=paginate @books%>
+</div>

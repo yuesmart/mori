@@ -1,0 +1,81 @@
+<%if @histories.nil? || @histories.empty?%>
+<div class="jumbotron">
+    <h1>Reading</h1>
+    <p>
+        
+    </p>
+    <p>
+        <a class="btn btn-lg btn-primary" href="/categories/1">Go,Begin Reading &raquo;</a>
+     </p>
+</div>
+<%else%>
+<%if @q.present?%>
+<div class="alert alert-info">
+    关键字：<%=@q%>
+</div>
+<%end%>
+
+<div class="col-xs-9">
+<h3>我的历史记录</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>小说名称</th>
+      <th>作者</th>
+      <th>上次阅读</th>
+      <th>阅读时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @histories.each do |history|
+      book = history.book 
+      next if book.nil?%>
+    
+      <tr>
+        <td><%= link_to highlight(book.name,@q),book %></td>
+        <td><%= highlight book.author,@q %></td>
+        <td><%= link_to history.current_chapter.name,history.current_chapter%></td>
+        <td><%= history.updated_at.to_s(:db)%>
+        <td>
+            <%= link_to "继续阅读",history.current_chapter%>|
+            <%= link_to "下一章",chapter_path(history.current_chapter,m: 'next')%> |
+            <%= link_to "上一章",chapter_path(history.current_chapter,m: 'pre')%>|
+            <%= link_to '目录', book %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="text-right">
+    <%=paginate @histories%>
+</div>
+</div>
+<div class="col-xs-3" id="hot_books">
+    <div class="well sidebar-nav">
+      <ol class="nav nav-list">
+        <li class="nav-header">热门点击</li>
+        <%@hot_books.each do |hb|%>
+        <li style="margin-left:5px;">[<%=link_to hb.category.name,hb.category%>]<%=link_to hb.name,hb%></li>
+        <%end%>        
+      </ol>
+    </div><!--/.well -->
+    
+    <div class="well sidebar-nav">
+      <ol class="nav nav-list">    
+        
+        <li class="nav-header">最近更新</li>
+        <%@recent_books.each do |hb|%>
+        <li style="margin-left:5px;">[<%=link_to hb.category.name,hb.category%>]<%=link_to hb.name,hb%></li>
+        <%end%>
+      </ol>
+    </div><!--/.well -->
+  </div><!--/span-->
+    
+</div>
+<%end%>
+
+
+  

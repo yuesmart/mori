@@ -1,0 +1,87 @@
+
+body {
+/*    font-family: 'Droid Sans';*/
+/*    font-size: 12px;*/
+/*    color: #666;*/
+}
+
+#chapters{
+   font-size: 15px; 
+   padding 5px;
+/*   letter-spacing:1px;*/
+   font: 16px Helvetica,Arial,sans-serif;
+   line-height: 1.62;
+}
+ul {
+    list-style: none;
+}
+
+.content{
+    margin-top: 50px;
+}
+
+/*p { text-indent: 2em;}*/
+
+.footer {
+    text-align: center;
+    padding: 30px 0px;
+    margin-top: 70px;
+    border-top: 1px solid rgb(229, 229, 229);
+    background-color: rgb(245, 245, 245);
+}
+
+.footer-links li {
+    display: inline;
+    padding: 0px 2px;
+}
+
+.pagination a {
+  padding: 0 14px;
+  line-height: 34px;
+  text-decoration: none;
+/*  border: 1px solid #ddd;*/
+  border-left-width: 0;
+  height: 34px;
+}
+
+
+.pagination ul {
+display: inline-block;
+margin-bottom: 0;
+margin-left: 0;
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
+-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.pagination ul > li {
+display: inline;
+}
+
+mark {
+    color: red;
+}
+
+#hot_books .nav > li > a {
+    position: relative;
+    display: inline;
+    padding: 2px;
+}
+
+
+#footer {
+   position:fixed;
+   left:0px;
+   bottom:0px;
+   height:25px;
+   width:100%;
+}
+
+/* IE 6 */
+* html #footer {
+   position:absolute;
+   top:expression((0-(footer.offsetHeight)+(document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight)+(ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop))+'px');
+}
