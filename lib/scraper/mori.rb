@@ -5,11 +5,9 @@ require "yaml"
 
 module Mori 
   ENABLE_PROXY = false
-
-  def log *msg
-    file, line, others = caller.first.split(":")
-    puts "#{time_to_str Time.now}\t#{file.split("/").last}:#{line}\t#{msg.join("\t")}"
-  end
+  PER_PAGE = 25
+  ENCODING = "gb2312"
+  MAX_UPDATED_COUNT = 100
 
   def get url,use_proxy=false,method='get',encoding=nil
     str = ''
@@ -60,6 +58,39 @@ module Mori
       save_error url,e.inspect    
       return get(url,true)
     end
+  end
+  
+  def check_mysql_connection
+    # kids = Book.connection.execute "select count(id) count from information_schema.processlist where Command='Sleep' and db='mori_development' and Time>10"
+    # 
+    # count = kids.first.first
+    # log '*'*100
+    # log "current connection:#{count}"
+    # log '*'*100
+    reset_mysql_connection #if count.to_i > 50
+  end
+  
+  def reset_mysql_connection
+    kids = Book.connection.execute "select concat('KILL ',id) kid from information_schema.processlist where  Command='Sleep' and db='mori_development' and Time>500"
+    kids.each do |k|
+      log "kill mysql connection:#{k.first}"
+      begin
+        Book.connection.execute k.first
+      rescue => e
+        log "killed error:#{e.inspect}"
+      end
+    end
+    
+    begin
+      ActiveRecord::Base.clear_active_connections!
+    rescue => e
+      log "clear error:#{e.inspect}"
+    end
+    # sleep 1
+  end
+    
+  def content_count html
+    trim(html).length rescue 0
   end
 
   def a node, key
@@ -152,6 +183,10 @@ module Mori
     @proxy_server.update_attributes active: false,status: 'Error' if ENABLE_PROXY
   end
   
+  def log *msg
+    file, line, others = caller.first.split(":")
+    puts "#{time_to_str Time.now}\t#{file.split("/").last}:#{line}\t#{msg.join("\t")}"
+  end
 
   alias text t
   alias g get

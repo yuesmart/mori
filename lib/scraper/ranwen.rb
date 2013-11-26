@@ -5,37 +5,43 @@ require 'mori'
 
 class Ranwen
   include Mori
-
   BASE_URL = "http://www.ranwen.net"
-  PER_PAGE = 25
-  ENCODING = "gb2312"
   
+  #解析图书
+  #
+  def parse_book page=1
+    url = "#{BASE_URL}/modules/article/index.php?page=#{page}"
+    doc = h url,ENCODING
+    _parse_book doc
+  end
+  
+  #解析章节
+  #
+  def parse_chapter
+    Book.where(chapter_status: 'Pending').each do |book|
+      _parse_chapter book
+    end
+  end
+  
+  #解析更新
+  #
+  def parse_update
+    @updated_books_count = 0
+    _parse_update
+  end
+  
+  
+  #解析书籍上下级关系
+  #
   def parse_chapter_associate
     Book.all.each do |book|
       log book.name
-      parse_chapter_associate_inner book.chapters
+      _parse_chapter_associate book.chapters
     end 
   end
   
-  def parse_chapter_associate_inner chapters
-    chapters.each do |c|
-      next if c.pre_id.blank?
-      
-      pre_chapter = c.pre
-      next if pre_chapter.nil?
-      
-      pre_chapter.update_attributes next_id: c.id
-    end
-  end
-  
-  def parse_special_book
-    %w{21737}.each do |book_id|
-      book = Book.find book_id
-      log book.name
-      parse_content book.chapters.where(status: 'Pending')
-    end
-  end
-  
+  #解析书籍内容
+  #
   def parse_content chapters = nil,_page=nil,_max_page=nil
     log "parse content:#{_page},#{_max_page}"
     max_page = _max_page.to_i
@@ -49,16 +55,27 @@ class Ranwen
         chapters = Chapter.find ids.collect(&:id)
         log "size:#{chapters.size}"
         break if chapters.nil? || chapters.empty?
-        parse_content_inner chapters
+        _parse_content chapters
         break if max_page > 0 && page > max_page
         page+= 1
       end
     else
-      parse_content_inner chapters
+      _parse_content chapters
+    end
+  end
+  
+  def _parse_chapter_associate chapters
+    chapters.each do |c|
+      next if c.pre_id.blank?
+      
+      pre_chapter = c.pre
+      next if pre_chapter.nil?
+      
+      pre_chapter.update_attributes next_id: c.id
     end
   end
 
-  def parse_content_inner chapters
+  def _parse_content chapters
     log "parse content"
     threads = []
     chapter_ids = []
@@ -107,47 +124,9 @@ class Ranwen
   rescue => e
     log "error:#{e.inspect}"
   end
+
   
-  def check_mysql_connection
-    # kids = Book.connection.execute "select count(id) count from information_schema.processlist where Command='Sleep' and db='mori_development' and Time>10"
-    # 
-    # count = kids.first.first
-    # log '*'*100
-    # log "current connection:#{count}"
-    # log '*'*100
-    reset_mysql_connection #if count.to_i > 50
-  end
-  
-  def reset_mysql_connection
-    kids = Book.connection.execute "select concat('KILL ',id) kid from information_schema.processlist where  Command='Sleep' and db='mori_development' and Time>500"
-    kids.each do |k|
-      log "kill mysql connection:#{k.first}"
-      begin
-        Book.connection.execute k.first
-      rescue => e
-        log "killed error:#{e.inspect}"
-      end
-    end
-    
-    begin
-      ActiveRecord::Base.clear_active_connections!
-    rescue => e
-      log "clear error:#{e.inspect}"
-    end
-    # sleep 1
-  end
-    
-  def content_count html
-    trim(html).length rescue 0
-  end
-  
-  def parse_chapter
-    Book.where(chapter_status: 'Pending').each do |book|
-      parse_chapter_info book
-    end
-  end
-  
-  def parse_chapter_info book
+  def _parse_chapter book
     log "parse chapter"
     doc = h book.chapter_url,ENCODING
     book_info = doc/"#container_bookinfo"
@@ -178,28 +157,16 @@ class Ranwen
     book.update_attributes chapter_status: 'Done'
   end
   
-  def parse_book_update
-    @updated_books_count = 0
-    parse_book_update_inner
-  end
-  
-  def parse_book_update_inner page=1
+
+  def _parse_update page=1
     url = "#{BASE_URL}/modules/article/toplist.php?sort=lastupdate&page=#{page}"
     doc = h url,ENCODING
-    parse_book_info doc
+    _parse_book doc
   end
   
-  def parse_book
-    parse_book_inner
-  end
-  
-  def parse_book_inner page=1
-    url = "#{BASE_URL}/modules/article/index.php?page=#{page}"
-    doc = h url,ENCODING
-    parse_book_info doc
-  end
 
-  def parse_book_info doc
+
+  def _parse_book doc
     log "parse book"
     updated_status = false
     (doc/"table.sf-grid/tbody/tr").each do |tr|
@@ -236,21 +203,22 @@ class Ranwen
         if book.nil?
           log "\tCreate book:#{book_name}"
           book = Book.create config
-          parse_chapter_info book
+          _parse_chapter book
           parse_content book.chapters.where(status: 'Pending')
-          parse_chapter_associate_inner book.chapters
+          _parse_chapter_associate book.chapters
         else
           if book.last_chapter_url == last_chapter_url
             log "\tBook #{book_name} not updated,next"
-            @updated_books_count += 1
-            updated_status = true if @updated_books_count > 100
+            @updated_books_count = @updated_books_count.blank? ? 1 : @updated_books_count + 1
+            
+            updated_status = true if @updated_books_count > MAX_UPDATED_COUNT
             break
           else
             log "\tUpdate book:#{book_name}"
             book.update_attributes config
-            parse_chapter_info book
+            _parse_chapter book
             parse_content book.chapters.where(status: 'Pending')
-            parse_chapter_associate_inner book.chapters
+            _parse_chapter_associate book.chapters
           end
         end
       rescue => e
@@ -267,7 +235,7 @@ class Ranwen
       
     else
       _url,_text = la next_page
-      parse_book_inner $1 if _url =~ /page=(\d+)$/
+      parse_book $1 if _url =~ /page=(\d+)$/
     end
   end
 end
