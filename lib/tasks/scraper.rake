@@ -3,8 +3,16 @@
 $:.unshift(File.dirname(__FILE__))
 
 require 'scraper/ranwen'
+require 'scraper/qidian'
 
 namespace :scraper do
+  namespace :qidian do
+    desc "parse qidian book"
+    task :book => :environment do
+      Qidian.new.parse_book
+    end
+  end
+  
   namespace :ranwen do
     desc "parse book"
     task :book => :environment do

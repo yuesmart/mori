@@ -3,12 +3,7 @@ require 'open-uri'
 require 'uri'
 require "yaml"
 
-module Mori 
-  ENABLE_PROXY = false
-  PER_PAGE = 25
-  ENCODING = "gb2312"
-  MAX_UPDATED_COUNT = 100
-
+module Mori   
   def get url,use_proxy=false,method='get',encoding=nil
     str = ''
     begin
@@ -59,6 +54,15 @@ module Mori
       return get(url,true)
     end
   end
+  
+  def get_key_name type,key,value,category
+    if type == 'href'
+      (KEY_NAMES["#{type}_#{key}_#{category}".to_sym] || value["named_#{category}".to_sym] || "#{key}_#{category}").to_sym
+    else
+      raise "Error type:#{type}"
+    end
+  end
+  
   
   def check_mysql_connection
     # kids = Book.connection.execute "select count(id) count from information_schema.processlist where Command='Sleep' and db='mori_development' and Time>10"
@@ -187,8 +191,23 @@ module Mori
     file, line, others = caller.first.split(":")
     puts "#{time_to_str Time.now}\t#{file.split("/").last}:#{line}\t#{msg.join("\t")}"
   end
+  
+  def source_name
+    self.class.to_s.downcase
+  end
 
   alias text t
   alias g get
   alias la l
+  
+  
+
+  
+  KEY_NAMES = {
+    href_title_url: 'url',
+    href_title_name: 'name',
+    href_author_name: 'author'
+  }
+  ENABLE_PROXY = false
+  MAX_UPDATED_COUNT = 100
 end

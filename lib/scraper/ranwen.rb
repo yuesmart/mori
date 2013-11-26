@@ -5,6 +5,7 @@ require 'mori'
 
 class Ranwen
   include Mori
+  ENCODING = "gb2312"
   BASE_URL = "http://www.ranwen.net"
   
   #解析图书
@@ -64,6 +65,8 @@ class Ranwen
     end
   end
   
+  #================================================================
+  private
   def _parse_chapter_associate chapters
     chapters.each do |c|
       next if c.pre_id.blank?
