@@ -1,5 +1,4 @@
 class ReadChapterHistory < ActiveRecord::Base
-  attr_accessible *column_names
   belongs_to :user
   belongs_to :book
   belongs_to :chapter

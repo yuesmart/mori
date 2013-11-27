@@ -1,5 +1,4 @@
 class Chapter < ActiveRecord::Base
-  attr_accessible *column_names
   belongs_to :book
   belongs_to :volume
   has_one :content

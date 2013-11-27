@@ -1,5 +1,4 @@
 class Book < ActiveRecord::Base
-  attr_accessible *column_names
   belongs_to :source
   belongs_to :category
 

@@ -1,5 +1,4 @@
 class ReadBookHistory < ActiveRecord::Base
-  attr_accessible *column_names
   belongs_to :user
   belongs_to :book
   belongs_to :current_chapter,class_name: 'Chapter',foreign_key: 'current_chapter_id'
