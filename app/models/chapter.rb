@@ -10,9 +10,9 @@ class Chapter < ActiveRecord::Base
     
     config = {id: self.id,status: self.status}
     if c.nil?
-      ChapterId.create config
+      ChapterId.create! config
     else
-      c.update_attributes config
+      c.update_attributes! config
     end
   end
   

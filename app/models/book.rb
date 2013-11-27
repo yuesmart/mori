@@ -12,12 +12,12 @@ class Book < ActiveRecord::Base
       
       sw = SearchWord.find_by q: @q
       if sw.nil?
-        sw = SearchWord.create q: @q
+        sw = SearchWord.create! q: @q
       else
-        sw.update_attributes count: (sw.count||0)+1
+        sw.update_attributes! count: (sw.count||0)+1
       end
       
-      SearchLog.create search_word_id: sw.id,user_id: config[:user_id],q: @q
+      SearchLog.create! search_word_id: sw.id,user_id: config[:user_id],q: @q
       self.where("name like ? or author like ?","%#{@q}%","%#{@q}%").page(config[:page]).order(view_count: :desc)
     end
   end

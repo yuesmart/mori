@@ -151,6 +151,6 @@ class Parse
     end
 
     log "#{book.id.present? ? 'Update' : 'Create'} #{book_params[:name]}"
-    book.save
+    book.save!
   end
 end

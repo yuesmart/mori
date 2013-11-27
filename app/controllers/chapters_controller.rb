@@ -24,9 +24,4 @@ class ChaptersController < ApplicationController
         @category_id = @book.category_id
       end
     end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def chapter_params
-      params.require(:chapter).permit(:book_id, :name, :url, :deleted_at, :deleted, :pre_id, :next_id, :volume_id, :code)
-    end
 end
