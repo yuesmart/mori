@@ -42,7 +42,7 @@ module Mori
         when Net::HTTPSuccess then
           str = response.body
           str.encode! 'utf-8', encoding, {:invalid => :replace, :undef => :replace} unless encoding.blank?
-          @proxy_server.update_attributes! succ_count: @proxy_server.succ_count+1 unless @proxy_server.nil?
+          @proxy_server.update_attributes succ_count: @proxy_server.succ_count+1 unless @proxy_server.nil?
           str
         else
           save_error url, response.code
@@ -183,8 +183,8 @@ module Mori
   def save_error url, content
     log "http error:#{url},#{content}"
     error = ErrorUrl.find_by url: url
-    ErrorUrl.create! url: url, status: content if error.nil?
-    @proxy_server.update_attributes! active: false, status: 'Error' if ENABLE_PROXY
+    ErrorUrl.create url: url, status: content if error.nil?
+    @proxy_server.update_attributes active: false, status: 'Error' if ENABLE_PROXY
   end
 
   def log *msg

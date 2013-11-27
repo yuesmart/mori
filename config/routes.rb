@@ -4,6 +4,6 @@ Mori::Application.routes.draw do
   devise_for :users, controllers:  { omniauth_callbacks: "users/omniauth_callbacks" ,registrations: "users/registrations"}
   resources :chapters,only: [:show]
   resources :categories,only: [:show]
-  resources :books,only: [:show,:index]
+  resources :books,only: [:show]
   root "main#index"
 end

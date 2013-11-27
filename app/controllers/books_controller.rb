@@ -21,4 +21,9 @@ class BooksController < ApplicationController
       @book = Book.where(id: params[:id]).includes(:category).first
       @category_id = @book.category_id
     end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def book_params
+      params.require(:book).permit(:name, :code, :author, :last_updated_at, :source_id, :view_count, :desc, :recommend, :word_count, :comment_count, :deleted_at, :deleted)
+    end
 end

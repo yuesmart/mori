@@ -84,9 +84,9 @@ class Proxy
       p "#{ip}:#{port}"
       ps = ProxyServer.find_by ip: ip,port: port
       if ps.nil?
-        ProxyServer.create! ip: ip,port: port
+        ProxyServer.create ip: ip,port: port
       else
-        ps.update_attributes! count: ps.count+1
+        ps.update_attributes count: ps.count+1
       end
     end
   end
