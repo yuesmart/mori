@@ -25,4 +25,5 @@ Mori::Application.configure do
   # number of complex assets.
   config.assets.debug = true
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.secret_key_base = "f2b406c5797d3a9570ba7403a0011b48d528a43f0b9c4c38eb73862f65f446ccfd072cdbe9e97d9ca3238484090fee77deb7c7e04af3ca9ffe590700efb33813"
 end
