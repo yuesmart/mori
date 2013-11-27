@@ -64,6 +64,19 @@ Source.create name: '起点中文网', code: 'qidian', url: 'http://qidian.com',
 
 目前才才是list节点
 
+## 安装
+```
+git clone git@github.com:yuesmart/mori.git
+cd mori
+cp config/database.yml.local  config/database.yml
+vi config/database.yml (修改数据库账号密码)
+rake db:create (创建数据库)
+rake db:migrate (导入表结构)
+rake db:seed (加载测试源，如果需要)
+rails s
+
+```
+
 ## 截图
 
 * 首页

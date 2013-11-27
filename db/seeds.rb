@@ -1,6 +1,8 @@
 #encoding: utf-8
 
 Source.create name: '燃文小说网', code: 'ranwen', url: 'http://www.ranwen.net'
+
+
 rules = {
     #书籍列表
     book: {
@@ -43,17 +45,17 @@ rules = {
         #书籍明细，如图片，公告，评论等
         info: {
           path: '#divBookInfo',
-          segments:[
+          segments: {
             cover: {
               category: 'replace',
-              ref_key: 'code'
+              ref_key: 'code',
               pattern: 'http://image.cmfu.com/books/${code}/${code}.jpg'
-            }
+            },
             title: 'div.title/h1',
             author: 'span[@itemprop="name"]',
             desc: 'span[@itemprop="description"]',
             tags: 'div.labels/a'
-          ]
+          }
         },
         #书籍章节列表
         chapter: {
@@ -65,4 +67,5 @@ rules = {
         }
     }
 }
+
 Source.create name: '起点中文网', code: 'qidian', url: 'http://qidian.com', rules: rules.to_yaml
