@@ -5,12 +5,16 @@ require 'mori'
 
 class Parse
   include Mori
+  def load_source
+    @source = Source.find_by(code: source_name)
+    @config ||= YAML.load(@source.rules)
+  end
+  
   #解析图书
   #
   def parse_book page=1
     log "parse book page:#{page}"
-    @source = Source.find_by(code: source_name)
-    @config ||= YAML.load(@source.rules)
+    load_source
     _config = @config[:book][:list]
     doc = h _config[:url].sub(':page', page.to_s)
     book = doc/_config[:path]
@@ -38,6 +42,68 @@ class Parse
     parse_book page_number if page_number>1
   end
 
+  def parse_info
+    load_source
+    _config = @config[:book][:info]
+    
+    Book.all.each do |book|
+      doc = h "#{@source.url}#{book.url}"
+      info = doc/_config[:path]
+      _parse_info info,book,_config
+    end
+  end
+  #解析章节
+  #
+  def parse_chapter
+  end
+
+  #解析更新
+  #
+  def parse_update
+  end
+
+  #解析书籍内容
+  #
+  def parse_content chapters = nil
+  end
+
+  #解析书籍上下级关系
+  #
+  def parse_chapter_associate
+  end
+
+  #================================================================
+  def _parse_info doc,book,book_config
+     item = doc
+     book_params = {}
+     book_config[:segments].each do |key, value|
+       if value.is_a?(Hash)
+         category = value[:category]||'string'
+         if category == 'string'
+           type = value[:type]||'text'
+           if type == 'href'
+             _url, _name = la item/value[:path]
+             book_params[get_key_name type, key, value, 'url'] = _url if value[:save_url].nil? || value[:save_url] == true
+             book_params[get_key_name type, key, value, 'name'] = _name
+           else
+             raise "Error type:#{type}"
+           end
+         elsif category == 'regexp'
+           str = (item/value[:path]).inner_html
+           book_params[key] = $1 if str =~ /#{value[:pattern]}/
+         elsif category == 'replace'
+           #ignore
+         else
+           raise "Error category:#{category}"
+         end
+       else
+         book_params[key] = t item/value
+       end
+     end 
+     
+     p book_params
+  end
+  
   def _parse_book doc, path, book_config
     _count = 0
     (doc/path).each do |item|
@@ -65,34 +131,14 @@ class Parse
           book_params[key] = t item/value
         end
       end
+      
       _save_book book_params
       _count += 1
     end
 
     _count
   end
-
-  #解析章节
-  #
-  def parse_chapter
-  end
-
-  #解析更新
-  #
-  def parse_update
-  end
-
-  #解析书籍内容
-  #
-  def parse_content chapters = nil
-  end
-
-  #解析书籍上下级关系
-  #
-  def parse_chapter_associate
-  end
-
-  #================================================================
+  
   def _save_book book_params
     book = Book.find_by(source_id: book_params[:source_id], url: book_params[:url])||Book.new
 

@@ -11,6 +11,11 @@ namespace :scraper do
     task :book => :environment do
       Qidian.new.parse_book
     end
+    
+    desc "parse qidian book info"
+    task :info => :environment do
+      Qidian.new.parse_info
+    end
   end
   
   namespace :ranwen do
