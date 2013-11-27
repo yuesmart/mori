@@ -65,18 +65,73 @@ Source.create name: '起点中文网', code: 'qidian', url: 'http://qidian.com',
 目前才才是list节点
 
 ## 安装
+* 获取代码
+
 ```
 git clone git@github.com:yuesmart/mori.git
-cd mori
-cp config/database.yml.local  config/database.yml
-vi config/database.yml (修改数据库账号密码)
-rake db:create (创建数据库)
-rake db:migrate (导入表结构)
-rake db:seed (加载测试源，如果需要)
-rails s
-
 ```
 
+* 更新数据库配置
+
+```
+cd mori
+cp config/database.yml.local  config/database.yml
+vi config/database.yml
+```
+
+* 导入表结构
+
+```
+rake db:create
+rake db:migrate
+```
+
+* 加载测试源
+
+```
+rake db:seed (加载测试源，如果需要)
+```
+
+## 抓取
+
+### 抓取燃文小说
+* 小说信息
+
+```
+rake scraper:ranwen:book 
+```
+
+* 小说章节信息
+```
+rake scraper:ranwen:chapter
+```
+
+* 消息章节正文
+```
+rake scraper:ranwen:content
+```
+
+* 解析章节之间关系
+```
+rake scraper:ranwen:associate
+```
+
+* 定期更新图书
+```
+rake scraper:ranwen:update 
+```
+
+### 根据规则抓取
+seeds.rb中已经内置了起点图书列表的规则，如果你已经执行过rake db:seed可以直接执行如下命令：
+```
+rake scraper:qidian:book 
+```
+
+批量获取起点图书基本信息。
+
+更多功能开发中，后期将以规则抓取为主，上面的燃文会被改写成规则抓取。
+
+**目前规则元数据格式不是最终确定的格式，因为才开始分析起点一个网站，也许后期会逐渐的完善、稳定下来**
 ## 截图
 
 * 首页

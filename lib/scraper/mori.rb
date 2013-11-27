@@ -206,5 +206,6 @@ module Mori
       href_author_name: 'author'
   }
   ENABLE_PROXY = false
+  PER_PAGE = 25
   MAX_UPDATED_COUNT = 100
 end
