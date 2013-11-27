@@ -25,29 +25,20 @@ class FavouritesController < ApplicationController
   # POST /favourites.json
   def create
     @favourite = Favourite.new(favourite_params)
-
-    respond_to do |format|
-      if @favourite.save
-        format.html { redirect_to @favourite, notice: 'Favourite was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @favourite }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @favourite.errors, status: :unprocessable_entity }
-      end
+    if @favourite.save
+      render text: 'ok'
+    else
+      render text: 'fail'
     end
   end
 
   # PATCH/PUT /favourites/1
   # PATCH/PUT /favourites/1.json
   def update
-    respond_to do |format|
-      if @favourite.update(favourite_params)
-        format.html { redirect_to @favourite, notice: 'Favourite was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @favourite.errors, status: :unprocessable_entity }
-      end
+    if @favourite.update(favourite_params)
+      redirect_to @favourite, notice: 'Favourite was successfully updated.'
+    else
+      render action: :edit
     end
   end
 
@@ -55,10 +46,7 @@ class FavouritesController < ApplicationController
   # DELETE /favourites/1.json
   def destroy
     @favourite.destroy
-    respond_to do |format|
-      format.html { redirect_to favourites_url }
-      format.json { head :no_content }
-    end
+    redirect_to favourites_url
   end
 
   private

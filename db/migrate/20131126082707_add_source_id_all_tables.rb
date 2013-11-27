@@ -1,7 +1,6 @@
 class AddSourceIdAllTables < ActiveRecord::Migration
   def change
-    add_column :volumes,:source_id,:integer,index: true    
-    # add_column :books,:source_id,:integer,index: true
+    add_column :volumes,:source_id,:integer,index: true
     add_column :categories,:source_id,:integer,index: true
     add_column :chapters,:source_id,:integer,index: true
     add_column :contents,:source_id,:integer,index: true

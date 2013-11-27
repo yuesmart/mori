@@ -21,7 +21,6 @@ module Mori
     # config.i18n.default_locale = :de
     config.time_zone = 'Beijing'
     config.active_record.default_timezone   = :local
-    
     config.generators.helper = false
     config.generators.stylesheets = false
     config.generators.javascripts = false

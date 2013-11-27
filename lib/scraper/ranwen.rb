@@ -7,7 +7,7 @@ class Ranwen
   include Mori
   ENCODING = "gb2312"
   BASE_URL = "http://www.ranwen.net"
-  
+
   #解析图书
   #
   def parse_book page=1

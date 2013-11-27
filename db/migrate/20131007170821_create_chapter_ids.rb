@@ -3,10 +3,7 @@ class CreateChapterIds < ActiveRecord::Migration
     create_table :chapter_ids,id: false do |t|
       t.integer :id
       t.string :status,length: 8,default: 'Pending'
-
-      # t.timestamps
     end
-    
     execute "insert into chapter_ids(id,status) select id,status from chapters"
   end
 end

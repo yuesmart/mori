@@ -232,10 +232,8 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
-  # OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE if Rails.env.development? 
   config.omniauth :github, 'f1e686ff92591044162d', '7a8617035ec728e416562f588a26dd51dbfa48fc', :scope => 'user,public_repo'
   config.omniauth :google_oauth2, "154339464054.apps.googleusercontent.com", "oteCpb0tIBIqY2pVa7c3hflS", { access_type: "offline", approval_prompt: "" }
- 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.

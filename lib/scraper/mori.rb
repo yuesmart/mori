@@ -66,7 +66,6 @@ module Mori
 
   def check_mysql_connection
     # kids = Book.connection.execute "select count(id) count from information_schema.processlist where Command='Sleep' and db='mori_development' and Time>10"
-    # 
     # count = kids.first.first
     # log '*'*100
     # log "current connection:#{count}"

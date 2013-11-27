@@ -1,8 +1,8 @@
 module SocialMediaAuthentication
   extend ActiveSupport::Concern
-  
+
   module ClassMethods
-    
+
     def find_for_google_oauth2(access_token, signed_in_resource=nil)
         data = access_token.info
         user = User.where(email: data["email"]).first
@@ -15,13 +15,13 @@ module SocialMediaAuthentication
       user = User.create(name:auth.extra.raw_info.name,provider:auth.provider,uid:auth.uid,email:auth.raw_info.email, password:Devise.friendly_token[0,20]) if user.nil?
       user
     end
-  
+
     def find_for_twitter_oauth(auth, signed_in_resource=nil)
       user = User.where(:provider => auth.provider, :uid => auth.uid).first
       user = User.create(name:auth.extra.raw_info.name,provider:auth.provider,uid:auth.uid,email:auth.raw_info.email, password:Devise.friendly_token[0,20]) if user.nil?
       user
     end
-  
+
     def find_for_github_oauth(auth, signed_in_resource=nil)
       find_for_oauth auth, signed_in_resource
     end
@@ -40,7 +40,5 @@ module SocialMediaAuthentication
         end
       end
     end
-    
-  end
-  
+  end  
 end

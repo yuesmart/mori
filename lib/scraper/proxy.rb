@@ -13,7 +13,7 @@ class Proxy
       proxy_list = (doc/"#proxylisttb")
       (proxy_list/"tr > td:nth(0)").each do |td|
         ip  = text td
-        ip  = $1 if ip =~ /(.*?)document/ 
+        ip  = $1 if ip =~ /(.*?)document/
         port = ''
         if td.inner_html =~ /<script type="text\/javascript">document\.write\(":"(.*?)\)<\/script>/
           $1.split('+').each do |pa|

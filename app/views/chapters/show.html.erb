@@ -24,7 +24,6 @@
             <%=raw @chapter.content.try(:content)%>
         </table>
     </div>
-    
     <div class="text-center">
         <%if @pre_chapter.present?%>
             <a href="/chapters/<%=@pre_chapter.id%>">上一章：<%=truncate @pre_chapter.name,length: 25%></a>

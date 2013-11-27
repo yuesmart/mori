@@ -1,8 +1,8 @@
 class ReadChapterHistory < ActiveRecord::Base
+  attr_accessible *column_names
   belongs_to :user
   belongs_to :book
   belongs_to :chapter
-  
 
   class<<self
     def add_to_history config
@@ -19,6 +19,5 @@ class ReadChapterHistory < ActiveRecord::Base
         book_history.update_attributes! current_chapter_id: chapter_id,view_count: (book_history.view_count||0)+1
       end
     end
-  
   end
 end

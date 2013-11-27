@@ -9,7 +9,7 @@ class Parse
     @source = Source.find_by(code: source_name)
     @config ||= YAML.load(@source.rules)
   end
-  
+
   #解析图书
   #
   def parse_book page=1
